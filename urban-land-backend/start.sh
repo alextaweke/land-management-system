@@ -1,1 +1,1 @@
-gunicorn urban-land-backend.wsgi:application
+gunicorn config.wsgi:application
