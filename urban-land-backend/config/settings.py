@@ -71,8 +71,9 @@ ROOT_URLCONF = 'config.urls'
 # CORS_ALLOW_ALL_ORIGINS = True
 # Or for more security, specify allowed origins:
 CORS_ALLOWED_ORIGINS = [
-    land-management-system-ag10luvsn-alextaweke-5562s-projects.vercel.app,
+    "https://land-management-system-ag10luvsn-alextaweke-5562s-projects.vercel.app",
 ]
+
 
 TEMPLATES = [
     {
