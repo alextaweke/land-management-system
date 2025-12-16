@@ -1,35 +1,44 @@
 #!/usr/bin/env bash
 set -o errexit
 
-echo "=== CLEAN MIGRATION RESET ==="
-
-# OPTION A: Clear migration history completely (if no important data)
+echo "=== DROPPING ALL DJANGO TABLES ==="
 python manage.py shell << EOF
 from django.db import connection
 try:
     with connection.cursor() as cursor:
-        cursor.execute("DROP TABLE IF EXISTS django_migrations CASCADE;")
-        print("Dropped django_migrations table")
+        # Drop all Django-related tables
+        cursor.execute("""
+            DO \$\$ 
+            DECLARE
+                r RECORD;
+            BEGIN
+                FOR r IN (SELECT tablename FROM pg_tables WHERE schemaname = 'public') LOOP
+                    EXECUTE 'DROP TABLE IF EXISTS ' || quote_ident(r.tablename) || ' CASCADE';
+                    RAISE NOTICE 'Dropped table: %', r.tablename;
+                END LOOP;
+            END \$\$;
+        """)
+        print("All tables dropped successfully")
 except Exception as e:
-    print(f"Error: {e}")
+    print(f"Error dropping tables: {e}")
 EOF
 
-# OPTION B: Or use Django's migrate --fake-zero
-python manage.py migrate --fake-zero 2>/dev/null || true
-
-echo "=== CREATE AND APPLY MIGRATIONS ==="
+echo "=== CREATE AND APPLY FRESH MIGRATIONS ==="
 python manage.py makemigrations --noinput
 python manage.py migrate --noinput
 
-echo "=== CREATE SUPERUSER (optional) ==="
+echo "=== CREATE SUPERUSER ==="
 python manage.py shell << EOF
 from django.contrib.auth import get_user_model
 User = get_user_model()
-if not User.objects.filter(username='admin').exists():
-    User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
-    print("Superuser created: admin/admin123")
-else:
-    print("Superuser already exists")
+try:
+    if not User.objects.filter(username='admin').exists():
+        User.objects.create_superuser('admin', 'admin@example.com', 'admin123')
+        print("Superuser created: admin/admin123")
+    else:
+        print("Superuser already exists")
+except Exception as e:
+    print(f"Note: Could not create superuser yet: {e}")
 EOF
 
 echo "=== COLLECT STATIC ==="
