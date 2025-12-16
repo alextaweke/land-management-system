@@ -80,21 +80,56 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'config.urls'
 
-# CORS_ALLOW_ALL_ORIGINS = True
-# Or for more security, specify allowed origins:
+# CORS Settings
 CORS_ALLOWED_ORIGINS = [
+    "https://land-management-system-alextaweke-5562s-projects.vercel.app",
     "https://land-management-system-v1l0.onrender.com",
-    "https://land-management-system-ag10luvsn-alextaweke-5562s-projects.vercel.app",
+    "http://localhost:3000",  # For local development
+    "http://127.0.0.1:3000",
 ]
-# Add this for Render
-if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
-    ALLOWED_HOSTS.append(os.environ['RENDER_EXTERNAL_HOSTNAME'])
+
+# OR allow all origins during development
+# CORS_ALLOW_ALL_ORIGINS = True
+
+# Important: Allow credentials (cookies, authorization headers)
+CORS_ALLOW_CREDENTIALS = True
+
+# Allow specific headers
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
+
+# Allow specific methods
+CORS_ALLOW_METHODS = [
+    'DELETE',
+    'GET',
+    'OPTIONS',
+    'PATCH',
+    'POST',
+    'PUT',
+] 
+ALLOWED_HOSTS.append(os.environ['RENDER_EXTERNAL_HOSTNAME'])
 
 # Add CSRF trusted origins
+# CSRF Trusted Origins
 CSRF_TRUSTED_ORIGINS = [
+    'https://land-management-system-alextaweke-5562s-projects.vercel.app',
     'https://land-management-system-v1l0.onrender.com',
-    'https://*.onrender.com',
 ]
+
+# If using session authentication
+CSRF_COOKIE_SAMESITE = 'Lax'
+SESSION_COOKIE_SAMESITE = 'Lax'
+CSRF_COOKIE_HTTPONLY = False  # Might need to be False for JavaScript access
+SESSION_COOKIE_HTTPONLY = True
 
 TEMPLATES = [
     {
