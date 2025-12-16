@@ -14,6 +14,8 @@ import Users from "./pages/Users";
 import LandParcels from "./pages/land/LandParcels";
 import LandDetail from "./pages/land/LandDetail";
 import OwnerSearch from "./pages/OwnerSearch";
+import CredentialsInfoPage from "./components/CredentialsInfoPag";
+
 // Protected Route Wrapper
 type PrivateRouteProps = { children: React.ReactNode };
 const PrivateRoute = ({ children }: PrivateRouteProps) => {
@@ -35,6 +37,7 @@ const App: React.FC = () => {
   return (
     <Routes>
       {/* Public Routes */}
+      <Route path="/" element={<CredentialsInfoPage />} />
       <Route path="/login" element={<Login />} />
       <Route path="/register" element={<Register />} />
 
