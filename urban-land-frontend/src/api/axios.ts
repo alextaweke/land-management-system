@@ -4,7 +4,7 @@ import axios from "axios";
 const api = axios.create({
   baseURL:
     import.meta.env.VITE_API_URL ||
-    "https://land-management-system-8c0d.onrender.com/api",
+    "https://land-management-system-v1l0.onrender.com/api",
   headers: {
     "Content-Type": "application/json",
     Accept: "application/json",
@@ -54,7 +54,7 @@ api.interceptors.response.use(
           const response = await axios.post(
             `${
               import.meta.env.VITE_API_URL ||
-              "https://land-management-system-8c0d.onrender.com/api"
+              "https://land-management-system-v1l0.onrender.com/api"
             }/token/refresh/`,
             { refresh: refreshToken }
           );
